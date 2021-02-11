@@ -1,0 +1,5 @@
+__version__ = '0.1'
+
+from .core import *
+
+__all__ = ['zfitter']
