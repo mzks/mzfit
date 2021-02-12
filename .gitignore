@@ -133,3 +133,9 @@ dmypy.json
 
 # binary
 bin
+
+# test
+test/*
+
+# notebook
+notebook/*
