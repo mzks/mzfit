@@ -42,8 +42,8 @@ class zfitter(object):
         self.calc_fit_bins()
         self.obs = zfit.Space('x', limits=(self.fit_lower, self.fit_upper))
 
-    def add_parameter(self, parameter):
-        zfit.Parameter(parameter)
+    def set_parameter(self, parname, value):
+        self.model.params[parname].set_value(value)
 
     def set_model(self, model):
         if model == 'gauss':
@@ -53,15 +53,27 @@ class zfitter(object):
         else:
             self.model = model
 
+        print('Parameters')
+        self.params()
+
     def set_loss(self, loss):
         self.loss = loss
+
+    def params(self):
+        params = self.model.get_params()
+        [print(v.name + ' : ' + str(v.value().numpy())) for v in self.model.get_params()]
+        return params
+
+    def summary(self):
+        print('Fitting summary')
+
 
     def fit(self):
         self.model = self.model
         data = zfit.Data.from_numpy(obs=self.obs, array=self.data)
-        result = self.minimizer.minimize(self.loss(model=self.model, data=data))
+        self.result = self.minimizer.minimize(self.loss(model=self.model, data=data))
         self.fitted = True
-        return result
+        return self.result
 
     def draw(self):
         hist = plt.hist(self.data, range=(self.data_lower, self.data_upper), bins=self.bins,
