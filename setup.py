@@ -18,5 +18,5 @@ setuptools.setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     install_requires=requires,
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     zip_safe=False)
