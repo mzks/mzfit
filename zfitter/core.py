@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import zfit
+from zfit import z
+import inspect
 
 class zfitter(object):
 
@@ -66,6 +68,37 @@ class zfitter(object):
 
     def summary(self):
         print('Fitting summary')
+
+
+    def set_model_func(self, func):
+
+        parameters = {k: v.default for k, v
+                      in inspect.signature(func).parameters.items()
+                      if k != 'x'}
+
+        class UserPDF(zfit.pdf.ZPDF):
+            _PARAMS = list(parameters.keys())
+
+            def _unnormalized_pdf(self, x):
+                params =[self.params[param] for param in self._PARAMS]
+                x = z.unstack_x(x)
+                args = {name:para for name, para in zip(self._PARAMS, params)}
+                return func(x, **args)
+
+        zfit_parameters = []
+
+        for k,v in parameters.items():
+            if v == inspect._empty:
+                v = 1
+            zfit_parameters.append(zfit.Parameter(k, v))
+        arguments = {name:para for name, para in zip(parameters.keys(), zfit_parameters)}
+
+        self.model = UserPDF(obs=self.obs, **arguments)
+
+        print('Parameters')
+        self.params()
+
+
 
 
     def fit(self):
