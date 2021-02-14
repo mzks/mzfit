@@ -52,6 +52,10 @@ class zfitter(object):
             mu = zfit.Parameter("mu", 0)
             sigma = zfit.Parameter("sigma", 1)
             self.model = zfit.pdf.Gauss(obs=self.obs, mu=mu, sigma=sigma)
+        elif model == 'uniform':
+            low = zfit.Parameter("low", 0)
+            high = zfit.Parameter("high", 1)
+            self.model = zfit.pdf.Uniform(obs=self.obs, low=low, high=high)
         else:
             self.model = model
 
