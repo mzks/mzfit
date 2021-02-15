@@ -113,8 +113,15 @@ class zfitter(object):
         return self.result
 
     def draw(self):
-        hist = plt.hist(self.data, range=(self.data_lower, self.data_upper), bins=self.bins,
-                        histtype='step', label='data')
+
+        hist = np.histogram(self.data, bins=self.bins, range=(self.data_lower, self.data_upper))
+        x = (hist[1][:-1] + hist[1][1:])/2
+        bin_widths = hist[1][1:] - hist[1][:-1]
+        xerr=bin_widths/2
+        y = hist[0]
+        yerr = np.sqrt(y)
+        plt.errorbar(x, y, xerr=xerr, yerr=yerr, linestyle='None', label='data')
+
         if self.model:
             x_fit = np.arange(self.fit_lower, self.fit_upper, self.bin_width*0.01)
             n_sample = len([d for d in self.data if self.fit_lower < d < self.fit_upper])
