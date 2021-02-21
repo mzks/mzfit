@@ -16,7 +16,7 @@ class zfitter(object):
         self._calc_fit_bins()
         self.model = None
         self.loss = zfit.loss.UnbinnedNLL
-        self.minimizer = zfit.minimize.Adam()
+        self.minimizer = zfit.minimize.Minuit()
         self.fitted = False
         self.obs = zfit.Space('x', limits=(self.fit_lower, self.fit_upper))
 
@@ -44,10 +44,23 @@ class zfitter(object):
         self._calc_fit_bins()
         self.obs = zfit.Space('x', limits=(self.fit_lower, self.fit_upper))
 
-    def set_parameter(self, parname, value):
-        self.model.params[parname].set_value(value)
+    def set_value(self, name, value):
+        self.model.params[name].set_value(value)
+
+    def set_parameter(self, name, value):
+        if name in zfit.Parameter._existing_params:
+            param = self.model.params[name]
+            if value:
+                param.set_value(value)
+        else:
+            print('No such Parameter ' + name)
+
+    def set_parameters(self, dict):
+        for name, value in dict.items():
+            self.set_parameter(name, value)
 
     def set_model(self, model):
+        self._reset_parameters()
         if model == 'gauss':
             mu = zfit.Parameter("mu", 0)
             sigma = zfit.Parameter("sigma", 1)
@@ -56,6 +69,9 @@ class zfitter(object):
             low = zfit.Parameter("low", 0)
             high = zfit.Parameter("high", 1)
             self.model = zfit.pdf.Uniform(obs=self.obs, low=low, high=high)
+        elif model == 'exp':
+            Lambda = zfit.Parameter("lambda", 0)
+            self.model = zfit.pdf.Uniform(obs=self.obs, Lambda=Lambda)
         else:
             self.model = model
 
@@ -71,11 +87,17 @@ class zfitter(object):
         return params
 
     def summary(self):
-        print('Fitting summary')
+        if self.result:
+            print('Fitting summary')
+            print(self.result)
+
+    def _reset_parameters(self):
+        zfit.Parameter._existing_params.clear()
 
 
     def set_model_func(self, func):
 
+        self._reset_parameters()
         parameters = {k: v.default for k, v
                       in inspect.signature(func).parameters.items()
                       if k != 'x'}
