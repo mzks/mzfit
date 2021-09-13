@@ -1,10 +1,14 @@
+import os
+os.environ['ZFIT_DISABLE_TF_WARNINGS']='1'
+
 import numpy as np
 import matplotlib.pyplot as plt
+
 import zfit
 from zfit import z
 import inspect
 
-class zfitter(object):
+class zf(object):
 
     def __init__(self, data, bins=None, lower=None, upper=None):
         self.data = data
