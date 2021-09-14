@@ -2,17 +2,17 @@ __version__ = '0.1'
 
 from .core import *
 
-__all__ = ['zfitter']
+__all__ = ['mzfit']
 
 
 def help():
     print("""
-    Welcome to zfitter!
+    Welcome to mzfit!
 
-    Fitting 4 steps on zfitter,
+    Fitting 4 steps on mzfit,
 
     Step 1 : Load data and make fitter
-    `zf = zfitter.zf(data)`
+    `zf = mzfit.zf(data)`
 
     Step 2 : Make model and initial parameters
     ```

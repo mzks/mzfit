@@ -1,5 +1,5 @@
-# zfitter
-zfit wrapper for lazy analysts [GitHub](https://github.com/mzks/zfitter)
+# mzfit
+zfit wrapper for lazy analysts [GitHub](https://github.com/mzks/mzfit)
 
 Author: Keita Mizukoshi (Kobe Univ. mzks@stu.kobe-u.ac.jp, @mzks)
 
@@ -8,13 +8,20 @@ Author: Keita Mizukoshi (Kobe Univ. mzks@stu.kobe-u.ac.jp, @mzks)
 However, I would sometime like to fit easily. I do *not always* want to care minimizers and cost function.
 I usually take an approach for good fitting, try-error-retry with visual environment.
 For that purpose, raw `zfit` is slightly much.
-To prevent tenosynovitis of lazy analysts, I made a wrapper of `zfit`, `zfitter`
+To prevent tenosynovitis of lazy analysts, I made a wrapper of `zfit`, `mzfit`
 
-## Install for developer
+## Install via pip
 ```
-git clone https://github.com/mzks/zfitter
-python -m pip install -e zfitter
+pip install mzfit
 ```
 
 ## Simple Usage
-See notebook/zfitter1.ipynb.
+See `notebook/simple_example.ipynb`
+
+
+## Install for developer
+```
+git clone https://github.com/mzks/mzfit
+python -m pip install -e mzfit
+```
+

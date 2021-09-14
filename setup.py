@@ -5,7 +5,7 @@ import os, re, ast
 from setuptools import setup, find_packages
 
 
-PACKAGE_NAME = 'zfitter'
+PACKAGE_NAME = 'mzfit'
 with open(os.path.join(PACKAGE_NAME, '__init__.py')) as f:
     match = re.search(r'__version__\s+=\s+(.*)', f.read())
 version = str(ast.literal_eval(match.group(1)))
@@ -15,9 +15,9 @@ with open('requirements.txt') as f:
         for r in f.read().splitlines()]
 
 setup(
-    name="zfitter",
+    name="mzfit",
     version=version,
-    url='https://github.com/mzks/zfitter',
+    url='https://github.com/mzks/mzfit',
     author='Keita Mizukoshi',
     author_email='mzks@stu.kobe-u.ac.jp',
     maintainer='Keita Mizukoshi',
