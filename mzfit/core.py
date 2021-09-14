@@ -138,15 +138,16 @@ class zf(object):
         self.fitted = True
         return self.result
 
-    def draw(self):
+    def draw(self, **kwargs):
 
+        fig, ax = plt.subplots()
         hist = np.histogram(self.data, bins=self.bins, range=(self.data_lower, self.data_upper))
         x = (hist[1][:-1] + hist[1][1:])/2
         bin_widths = hist[1][1:] - hist[1][:-1]
         xerr=bin_widths/2
         y = hist[0]
         yerr = np.sqrt(y)
-        plt.errorbar(x, y, xerr=xerr, yerr=yerr, linestyle='None', label='data')
+        ax.errorbar(x, y, xerr=xerr, yerr=yerr, linestyle='None', label='Data')
 
         if self.model:
             x_fit = np.arange(self.fit_lower, self.fit_upper, self.bin_width*0.01)
@@ -154,7 +155,24 @@ class zf(object):
             scale_factor = n_sample/self.fit_bins*self.obs.area()
             y_fit = zfit.run(self.model.pdf(x_fit)*scale_factor)
             model_line_style = '-' if self.fitted else '--'
-            plt.plot(x_fit, y_fit, label='model', linestyle=model_line_style)
+            ax.plot(x_fit, y_fit, label='Model', linestyle=model_line_style)
+
+            if self.fitted:
+                result_values = self.result.error(method='minuit_minos')
+                for value, dict in result_values.items():
+                    name = value.name
+                    err_u = dict['upper']
+                    dec = int(np.floor(np.log10(err_u)) * -1)
+                    err_u = np.round(err_u, dec)
+                    err_l = np.round(dict['lower'], dec)
+                    val = np.round(value.value().numpy(), dec)
+
+                    #text = name + ' : ' + str(val) + ' +' + str(err_u) + ' ' + str(err_l)
+                    text = name + ' : ' + str(val) + r' $\pm$ ' + str(err_u)
+                    ax.plot([], [], zorder=-20, linewidth=0, label=text)
+
+        handles, labels = ax.get_legend_handles_labels()
+        plt.legend(loc='best', labels=labels[-1:]+labels[:-1], handles=handles[-1:]+handles[:-1])
         return
 
     def draw_option(self):
